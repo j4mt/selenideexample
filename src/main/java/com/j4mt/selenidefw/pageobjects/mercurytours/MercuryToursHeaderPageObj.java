@@ -1,4 +1,4 @@
-package com.j4mt.selenidefw.pageobjects.com.mercurytours;
+package com.j4mt.selenidefw.pageobjects.mercurytours;
 
 
 
