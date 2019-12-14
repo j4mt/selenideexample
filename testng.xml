@@ -1,0 +1,21 @@
+
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="TestNG" verbose="1" parallel="false" thread-count="2" data-provider-thread-count="3">
+
+    <test name="Expedia Book Flight Chrome">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.j4mt.selenidefw.tests.expedia.flights.CheckCostOfFlightDisplayed" />
+        </classes>
+    </test>
+
+<!--    <test name="Expedia Book Flight Firefox">-->
+<!--        <parameter name="browser" value="firefox"/>-->
+<!--        <classes>-->
+<!--            <class name="com.j4mt.selenidefw.tests.expedia.flights.CheckCostOfFlightDisplayed" />-->
+<!--        </classes>-->
+<!--    </test>-->
+
+</suite> <!-- Suite -->

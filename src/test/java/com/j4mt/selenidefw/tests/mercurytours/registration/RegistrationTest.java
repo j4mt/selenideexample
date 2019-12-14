@@ -1,22 +1,15 @@
 package com.j4mt.selenidefw.tests.mercurytours.registration;
 
-
-import com.j4mt.selenidefw.pageobjects.com.mercurytours.MercuryHomePageObj;
-import com.j4mt.selenidefw.pageobjects.com.mercurytours.MercuryToursRegistrationPageObj;
+import com.j4mt.selenidefw.pageobjects.mercurytours.MercuryHomePageObj;
+import com.j4mt.selenidefw.pageobjects.mercurytours.MercuryToursRegistrationPageObj;
 import org.testng.annotations.Test;
 
 public class RegistrationTest {
 
-
-
-    // Sign in with valid details
-    //@Parameters("browser")
     @Test
-//    @Feature("Mecury Tours")
-//    @Story("Registration Sign up")
-    public void registerTest(){
+    public void registerTest() {
         MercuryHomePageObj mercuryHomePage = new MercuryHomePageObj();
-        MercuryToursRegistrationPageObj mercuryToursRegistration= new MercuryToursRegistrationPageObj();
+        MercuryToursRegistrationPageObj mercuryToursRegistration = new MercuryToursRegistrationPageObj();
 
 
         mercuryHomePage.openHomePage();
