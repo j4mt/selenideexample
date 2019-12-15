@@ -1,5 +1,6 @@
 package com.j4mt.selenidefw.pageobjects.expedia.flights;
 
+import com.j4mt.selenidefw.modal.expedia.FlightResult;
 import com.j4mt.selenidefw.pageobjects.utils.DateCalculator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -37,7 +38,11 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
     private String resultXpath = "//div[@class=\"primary-content   custom-primary-padding\"]/span[contains(text(),'replaceMe')]";
 
-    private By costResults = By.xpath("//div[@class=\"primary-content   custom-primary-padding\"]/span");
+    private By flightResultsCostResults = By.xpath("//div[@class=\"primary-content   custom-primary-padding\"]/span");
+
+    private By flightResultsDepatureTimes = By.xpath("//span[@data-test-id='departure-time']");
+
+    private By flightResultsDepatureAirlines = By.xpath("//span[@data-test-id='airline-name']");
 
     /**
      * Selects fights button
@@ -133,25 +138,34 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
         return cost;
     }
 
-    public ArrayList<String> getTopCostsResults(int resultCnt) throws IOException {
-        ArrayList<String> results;
-        results = (ArrayList<String>) $$(costResults).texts();
-        ArrayList<String> topResults = new ArrayList<>();
+    public ArrayList<FlightResult> getTopCostsResults(int resultCnt) throws IOException {
+        ArrayList<String> costResults;
+        ArrayList<String> departureTimes;
+        ArrayList<String> airlines;
 
-        if (resultCnt > results.size()) {
+        costResults = (ArrayList<String>) $$(flightResultsCostResults).texts();
+        departureTimes =(ArrayList<String>) $$(flightResultsDepatureTimes).texts();
+        airlines = (ArrayList<String>) $$(flightResultsDepatureAirlines).texts();
+
+        ArrayList<FlightResult> flightResults = new ArrayList<>();
+
+        if (resultCnt > costResults.size()) {
             throw new IOException("Unable to print results to console, Cost Results to return is greater than results on UI");
         }
         for (int i = 0; i < resultCnt; i++) {
-            topResults.add(results.get(i));
+            flightResults.add(new FlightResult(departureTimes.get(i),airlines.get(i),costResults.get(i)));
         }
-        return topResults;
+        return flightResults;
     }
 
-    public void printResultstoConsole(ArrayList<String> results) {
+    public void printResultstoConsole(ArrayList<FlightResult> results) {
         for (int i = 0; i < results.size(); i++) {
-            System.out.println(" | -- \t Cost  Result : " + (i + 1) + " ---------- |");
-            System.out.println(" | ---\t\t " + results.get(i) + " ------------ |");
-            System.out.println(" | ---------------------------------------------- |");
+            System.out.println();
+            System.out.println(" |\t Flight result :  1 ---------- |");
+            System.out.println(" |\t\t Departure Time \t: " + results.get(i).getDepartureTime() + "  : ");
+            System.out.println(" |\t\t Airline \t: " + results.get(i).getAirline() + "  : ");
+            System.out.println(" |\t\t Price \t: " + results.get(i).getPrice() + "  : ");
+            System.out.println();
         }
     }
 }
