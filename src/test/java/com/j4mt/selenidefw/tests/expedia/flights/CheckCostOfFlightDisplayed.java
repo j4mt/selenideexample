@@ -19,6 +19,7 @@ public class CheckCostOfFlightDisplayed extends BaseTest {
         expediaFlightsPageObj.selectDepartureDate("today");
         expediaFlightsPageObj.selectReturnDate("today", 3);
         expediaFlightsPageObj.setNumOfPassengers(2, 0, 0);
+        expediaFlightsPageObj.clickSearch();
     }
 
 }

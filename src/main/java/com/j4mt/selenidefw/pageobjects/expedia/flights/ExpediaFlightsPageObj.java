@@ -2,6 +2,7 @@ package com.j4mt.selenidefw.pageobjects.expedia.flights;
 
 import com.j4mt.selenidefw.pageobjects.utils.DateCalculator;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 
 import java.text.ParseException;
 
@@ -13,7 +14,11 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
     private By departCityAirport = new By.ByCssSelector("#flight-origin-hp-flight");
 
+    private By departCityAirport1stSel = new By.ByCssSelector("#aria-option-0 > span.text > div");
+
     private By returnCityAirport = new By.ByCssSelector("#flight-destination-hp-flight");
+
+    private By returnCityAirport1stSel = new By.ByCssSelector("#aria-option-0 > div.multiLineDisplay.details > strong > fl");
 
     private By departDate = new By.ByCssSelector("#flight-departing-hp-flight");
 
@@ -27,6 +32,9 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
     private By infantsPlus = new By.ByCssSelector("#traveler-selector-hp-flight > div > ul > li > div > div > div > div.infants-wrapper > div.uitk-grid.step-input-outside.gcw-component.gcw-component-step-input.gcw-step-input.gcw-component-initialized > div:nth-child(4) > button > span.uitk-icon > svg > path:nth-child(1)");
 
+    private By searchBtn = new By.ByXPath("//*[@id=\"gcw-flights-form-hp-flight\"]/div[7]/label/button");
+
+
     /**
      * Selects fights button
      */
@@ -39,7 +47,6 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
      */
     public void selectDepartCityAirport(String cityAirport) {
         $(departCityAirport).sendKeys(cityAirport);
-        System.out.println("Debug point");
     }
 
     /**
@@ -47,7 +54,6 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
      */
     public void selectReturnCityAirport(String cityAirport) {
         $(returnCityAirport).sendKeys(cityAirport);
-        System.out.println("Debug point");
     }
 
     /**
@@ -79,6 +85,8 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
         if (departDate.equalsIgnoreCase("today")) {
             departDate = DateCalculator.getTodaysDateAmerican();
             System.out.println(departDate);
+            $(this.departDate).click();
+            $(this.departDate).clear();
             $(this.departDate).sendKeys(departDate);
         } else {
             $(this.departDate).sendKeys(departDate);
@@ -91,10 +99,21 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
      */
     public void selectReturnDate(String returnDate, int daysTilReturn) throws ParseException {
         if (returnDate.equalsIgnoreCase("today")) {
-            returnDate = DateCalculator.calculateAmericanReturnDate(DateCalculator.getTodaysDateAmerican(), 3);
+            returnDate = DateCalculator.calculateAmericanReturnDate(DateCalculator.getTodaysDateAmerican(), daysTilReturn);
+            $(this.returnDate).click();
+            $(this.returnDate).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+            $(this.returnDate).sendKeys(Keys.BACK_SPACE);
             $(this.returnDate).sendKeys(returnDate);
         } else if (!returnDate.equalsIgnoreCase("today")) {
             $(this.returnDate).sendKeys(returnDate);
         }
+    }
+
+    /**
+     * clicks flights search button
+     */
+    public void clickSearch(){
+        $(searchBtn).click();
+        System.out.println("Debug point");
     }
 }
