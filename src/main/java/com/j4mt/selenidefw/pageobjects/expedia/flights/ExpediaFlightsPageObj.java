@@ -163,8 +163,8 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
             System.out.println();
             System.out.println(" |\t Flight result :  1 ---------- |");
             System.out.println(" |\t\t Departure Time \t: " + results.get(i).getDepartureTime() + "  : ");
-            System.out.println(" |\t\t Airline \t: " + results.get(i).getAirline() + "  : ");
-            System.out.println(" |\t\t Price \t: " + results.get(i).getPrice() + "  : ");
+            System.out.println(" |\t\t Airline \t\t\t: " + results.get(i).getAirline() + "  : ");
+            System.out.println(" |\t\t Price \t\t\t: " + results.get(i).getPrice() + "  : ");
             System.out.println();
         }
     }
