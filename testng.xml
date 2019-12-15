@@ -6,6 +6,7 @@
 
     <test name="Expedia Book Flight Chrome">
         <parameter name="browser" value="chrome"/>
+        <parameter name="flightCost" value="$409"/>
         <classes>
             <class name="com.j4mt.selenidefw.tests.expedia.flights.CheckCostOfFlightDisplayed" />
         </classes>

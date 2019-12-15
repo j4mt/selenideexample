@@ -4,9 +4,12 @@ import com.j4mt.selenidefw.pageobjects.utils.DateCalculator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
+import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
@@ -14,11 +17,7 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
     private By departCityAirport = new By.ByCssSelector("#flight-origin-hp-flight");
 
-    private By departCityAirport1stSel = new By.ByCssSelector("#aria-option-0 > span.text > div");
-
     private By returnCityAirport = new By.ByCssSelector("#flight-destination-hp-flight");
-
-    private By returnCityAirport1stSel = new By.ByCssSelector("#aria-option-0 > div.multiLineDisplay.details > strong > fl");
 
     private By departDate = new By.ByCssSelector("#flight-departing-hp-flight");
 
@@ -34,6 +33,11 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
     private By searchBtn = new By.ByXPath("//*[@id=\"gcw-flights-form-hp-flight\"]/div[7]/label/button");
 
+    private By resultElement;
+
+    private String resultXpath = "//div[@class=\"primary-content   custom-primary-padding\"]/span[contains(text(),'replaceMe')]";
+
+    private By costResults = By.xpath("//div[@class=\"primary-content   custom-primary-padding\"]/span");
 
     /**
      * Selects fights button
@@ -59,9 +63,9 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
     /**
      * Sets number of passengers on ui
      *
-     * @param adults
-     * @param children
-     * @param infants
+     * @param adults   number of adults to add
+     * @param children number of children to add
+     * @param infants  number of infants to add
      */
     public void setNumOfPassengers(int adults, int children, int infants) {
         $(passengerSelector).click();
@@ -84,7 +88,6 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
     public void selectDepartureDate(String departDate) {
         if (departDate.equalsIgnoreCase("today")) {
             departDate = DateCalculator.getTodaysDateAmerican();
-            System.out.println(departDate);
             $(this.departDate).click();
             $(this.departDate).clear();
             $(this.departDate).sendKeys(departDate);
@@ -112,8 +115,43 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
     /**
      * clicks flights search button
      */
-    public void clickSearch(){
+    public void clickSearch() {
         $(searchBtn).click();
-        System.out.println("Debug point");
+    }
+
+    /**
+     * get cost string text from first result using a flight cost text in xpath search
+     *
+     * @param flightCost flight cost param for text to be selected from ui
+     * @return test of flight cost if present on screen
+     */
+    public String getCostString(String flightCost) {
+        String cost;
+        resultXpath = resultXpath.replace("replaceMe", flightCost);
+        resultElement = new By.ByXPath(resultXpath);
+        cost = $(resultElement).getText();
+        return cost;
+    }
+
+    public ArrayList<String> getTopCostsResults(int resultCnt) throws IOException {
+        ArrayList<String> results;
+        results = (ArrayList<String>) $$(costResults).texts();
+        ArrayList<String> topResults = new ArrayList<>();
+
+        if (resultCnt > results.size()) {
+            throw new IOException("Unable to print results to console, Cost Results to return is greater than results on UI");
+        }
+        for (int i = 0; i < resultCnt; i++) {
+            topResults.add(results.get(i));
+        }
+        return topResults;
+    }
+
+    public void printResultstoConsole(ArrayList<String> results) {
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println(" | -- \t Cost  Result : " + (i + 1) + " ---------- |");
+            System.out.println(" | ---\t\t " + results.get(i) + " ------------ |");
+            System.out.println(" | ---------------------------------------------- |");
+        }
     }
 }
