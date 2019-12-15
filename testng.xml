@@ -12,6 +12,7 @@
         </classes>
     </test>
 
+<!--    //TODO:marionette driver not configured properly to interact with firefox, using default selenide config fixes this over custom config-->
 <!--    <test name="Expedia Book Flight Firefox">-->
 <!--        <parameter name="browser" value="firefox"/>-->
 <!--        <classes>-->
