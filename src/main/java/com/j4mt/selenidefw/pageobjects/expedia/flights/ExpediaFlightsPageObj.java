@@ -2,10 +2,14 @@ package com.j4mt.selenidefw.pageobjects.expedia.flights;
 
 import com.j4mt.selenidefw.pageobjects.utils.DateCalculator;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 
+import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
@@ -27,6 +31,14 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
 
     private By infantsPlus = new By.ByCssSelector("#traveler-selector-hp-flight > div > ul > li > div > div > div > div.infants-wrapper > div.uitk-grid.step-input-outside.gcw-component.gcw-component-step-input.gcw-step-input.gcw-component-initialized > div:nth-child(4) > button > span.uitk-icon > svg > path:nth-child(1)");
 
+    private By searchBtn = new By.ByXPath("//*[@id=\"gcw-flights-form-hp-flight\"]/div[7]/label/button");
+
+    private By resultElement;
+
+    private String resultXpath = "//div[@class=\"primary-content   custom-primary-padding\"]/span[contains(text(),'replaceMe')]";
+
+    private By costResults = By.xpath("//div[@class=\"primary-content   custom-primary-padding\"]/span");
+
     /**
      * Selects fights button
      */
@@ -39,7 +51,6 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
      */
     public void selectDepartCityAirport(String cityAirport) {
         $(departCityAirport).sendKeys(cityAirport);
-        System.out.println("Debug point");
     }
 
     /**
@@ -47,15 +58,14 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
      */
     public void selectReturnCityAirport(String cityAirport) {
         $(returnCityAirport).sendKeys(cityAirport);
-        System.out.println("Debug point");
     }
 
     /**
      * Sets number of passengers on ui
      *
-     * @param adults
-     * @param children
-     * @param infants
+     * @param adults   number of adults to add
+     * @param children number of children to add
+     * @param infants  number of infants to add
      */
     public void setNumOfPassengers(int adults, int children, int infants) {
         $(passengerSelector).click();
@@ -78,7 +88,8 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
     public void selectDepartureDate(String departDate) {
         if (departDate.equalsIgnoreCase("today")) {
             departDate = DateCalculator.getTodaysDateAmerican();
-            System.out.println(departDate);
+            $(this.departDate).click();
+            $(this.departDate).clear();
             $(this.departDate).sendKeys(departDate);
         } else {
             $(this.departDate).sendKeys(departDate);
@@ -91,10 +102,56 @@ public class ExpediaFlightsPageObj extends ExpediaBasePageObj {
      */
     public void selectReturnDate(String returnDate, int daysTilReturn) throws ParseException {
         if (returnDate.equalsIgnoreCase("today")) {
-            returnDate = DateCalculator.calculateAmericanReturnDate(DateCalculator.getTodaysDateAmerican(), 3);
+            returnDate = DateCalculator.calculateAmericanReturnDate(DateCalculator.getTodaysDateAmerican(), daysTilReturn);
+            $(this.returnDate).click();
+            $(this.returnDate).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+            $(this.returnDate).sendKeys(Keys.BACK_SPACE);
             $(this.returnDate).sendKeys(returnDate);
         } else if (!returnDate.equalsIgnoreCase("today")) {
             $(this.returnDate).sendKeys(returnDate);
+        }
+    }
+
+    /**
+     * clicks flights search button
+     */
+    public void clickSearch() {
+        $(searchBtn).click();
+    }
+
+    /**
+     * get cost string text from first result using a flight cost text in xpath search
+     *
+     * @param flightCost flight cost param for text to be selected from ui
+     * @return test of flight cost if present on screen
+     */
+    public String getCostString(String flightCost) {
+        String cost;
+        resultXpath = resultXpath.replace("replaceMe", flightCost);
+        resultElement = new By.ByXPath(resultXpath);
+        cost = $(resultElement).getText();
+        return cost;
+    }
+
+    public ArrayList<String> getTopCostsResults(int resultCnt) throws IOException {
+        ArrayList<String> results;
+        results = (ArrayList<String>) $$(costResults).texts();
+        ArrayList<String> topResults = new ArrayList<>();
+
+        if (resultCnt > results.size()) {
+            throw new IOException("Unable to print results to console, Cost Results to return is greater than results on UI");
+        }
+        for (int i = 0; i < resultCnt; i++) {
+            topResults.add(results.get(i));
+        }
+        return topResults;
+    }
+
+    public void printResultstoConsole(ArrayList<String> results) {
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println(" | -- \t Cost  Result : " + (i + 1) + " ---------- |");
+            System.out.println(" | ---\t\t " + results.get(i) + " ------------ |");
+            System.out.println(" | ---------------------------------------------- |");
         }
     }
 }
